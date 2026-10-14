@@ -32,7 +32,8 @@ make
 
 (설명)
 
-![3 실행](screenshots/3_fifo.png)
+![받는 쪽](screenshots/3_fifo_read.png)
+![보내는 쪽](screenshots/4_fifo_write.png)
 
 ---
 

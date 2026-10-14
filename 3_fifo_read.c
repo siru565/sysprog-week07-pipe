@@ -17,6 +17,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <string.h>
 
 #define FIFO_PATH "/tmp/sysprog_fifo"
 
@@ -30,18 +31,20 @@ int main(void)
 
     printf("보내는 쪽을 기다립니다... (%s)\n", FIFO_PATH);
 
-    int fd = open(FIFO_PATH, O_RDONLY);   /* 상대가 열 때까지 여기서 기다린다 */
-    if (fd == -1) { perror("open"); return 1; }
+    while (1) {
+        int fd = open(FIFO_PATH, O_RDONLY);
+        if (fd == -1) { perror("open"); return 1; }
 
-    char buf[128];
-    /* 마지막 한 자리는 남겨 두어 뒤에 '\0'을 붙일 자리로 쓴다 */
-    ssize_t n = read(fd, buf, sizeof buf - 1);
-    if (n > 0) {
-        buf[n] = '\0';
-        printf("받은 메시지: %s\n", buf);
+        char buf[128];
+        ssize_t n = read(fd, buf, sizeof buf - 1);
+        close(fd);
+
+        if (n > 0) {
+            buf[n] = '\0';
+            printf("받은 메시지: %s\n", buf);
+            if (strcmp(buf, "quit") == 0) break;
+        }
     }
-
-    close(fd);
-    unlink(FIFO_PATH);   /* 다 썼으면 FIFO 파일도 지운다 — 안 지우면 파일시스템에 계속 남는다 */
+    unlink(FIFO_PATH);
     return 0;
 }
