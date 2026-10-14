@@ -1,0 +1,7 @@
+1_pipe
+2_pipeline
+3_fifo_read
+4_fifo_write
+*.o
+cmake-build-*/
+.idea/
